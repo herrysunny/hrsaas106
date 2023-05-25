@@ -1,5 +1,6 @@
+
 import { getToken, setToken, removeToken } from '@/utils/auth'
-import { login, getUserInfo } from '@/api/user'
+import { login, getUserInfo, getUserDetailId } from '@/api/user'
 // login(data)
 // 状态
 const state = {
@@ -35,7 +36,12 @@ const actions = {
   },
   async getUserInfo(context) {
     const result = await getUserInfo()
-    context.commit('setUserInfo', result) // 提交到mutations
+    // 获取用户详情
+    const baseInfo = await getUserDetailId(result.userId)
+    // const obj = { ...result, ...baseInfo } // 将两个接口结果合并
+    // 此时已经获取到了用户的基本资料 迫不得已 为了头像再次调用一个接口
+    // 加一个点睛之笔  这里这一步，暂时用不到，但是请注意，这给我们后边会留下伏笔
+    context.commit('setUserInfo', { ...result, ...baseInfo }) // 提交到mutations
     return result // 这里是给后期做权限的时候，留下的伏笔
   }
 }

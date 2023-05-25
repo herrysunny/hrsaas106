@@ -24,3 +24,13 @@ export function logout() {
 
 }
 
+/**
+ *  根据用户id获取用户的详情
+ *
+ * **/
+export function getUserDetailId() {
+  return request({
+    url: `/sys/role/{id}`
+    // method: 'get' //默认类型为get
+  })
+}
