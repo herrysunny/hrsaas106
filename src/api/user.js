@@ -10,9 +10,14 @@ export function login(data) {
     data // post请求参数
   })
 }
-
-export function getInfo(token) {
-
+/*
+ * 获取用户资料接口
+ */
+export function getUserInfo(token) {
+  return request({
+    url: '/sys/profile',
+    method: 'post'
+  })
 }
 
 export function logout() {
