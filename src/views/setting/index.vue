@@ -11,6 +11,7 @@
                 icon="el-icon-plus"
                 size="small"
                 type="primary"
+                @click="showDialog=true"
               >新增角色</el-button>
             </el-row>
             <!-- 给表格绑定数据 -->
@@ -19,9 +20,10 @@
               <el-table-column align="center" prop="name" label="名称" width="240" />
               <el-table-column align="center" prop="discription" label="描述" />
               <el-table-column align="center" label="操作">
+                <!-- 作用域插槽 -->
                 <template slot-scope="{row}">
                   <el-button size="small" type="success">分配权限</el-button>
-                  <el-button size="small" type="primary">编辑</el-button>
+                  <el-button size="small" type="primary" @click="editRole(row.id)">编辑</el-button>
                   <el-button size="small" type="danger" @click="delelteRole(row.id)">删除</el-button>
                 </template>
               </el-table-column>
@@ -64,11 +66,33 @@
         </el-tabs>
       </el-card>
     </div>
+    <!-- 放置一个弹层组件 -->
+    <el-dialog
+      title="编辑部门"
+      :visible="showDialog"
+      @close="btnCancel"
+    >
+      <el-form ref="roleForm" :model="roleForm" :rules="rules" label-width="120px">
+        <el-form-item label="角色名称" prop="name">
+          <el-input v-model="roleForm.name" />
+        </el-form-item>
+        <el-form-item label="角色描述" prop="name">
+          <el-input v-model="roleForm.description" />
+        </el-form-item>
+      </el-form>
+      <!-- 底部 -->
+      <el-row slot="footer" type="flex" justify="center">
+        <el-col :span="6">
+          <el-button size="small" @click="btnCancel">取消</el-button>
+          <el-button size="small" type="primary" @click="btnOK">确定</el-button>
+        </el-col>
+      </el-row>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { getRoleList, getCompanyInfo, delelteRole } from '@/api/setting'
+import { getRoleList, getCompanyInfo, delelteRole, getRoleDetail, updateRole } from '@/api/setting'
 import { mapGetters } from 'vuex'
 
 export default {
@@ -83,6 +107,15 @@ export default {
       },
       formData: {
         // 公司信息
+      },
+      showDialog: false,
+      // 专门接受新增或者编辑的表单数据
+      roleForm: {
+        name:'',
+        description:''
+      },
+      rules: {
+        name: [{ required: true, message: '角色名称不能为空', triger: 'blur' }]
       }
     }
   },
@@ -117,9 +150,40 @@ export default {
       } catch (error) {
         console.log(error)
       }
+    },
+    async editRole(id){
+      this.roleForm=await getRoleDetail(id) //实现数据回显
+      this.showDialog=true //为了不出现闪烁的问题 先获得数据 再弹出层
+  },
+  async btnOK(){
+    try {
+      await this.$refs.roleForm.validate()
+      // 只有校验通过的情况下 才会执行await下方
+      if(this.roleForm.id){
+        await updateRole(this.roleForm)
+      }else{
+        // 新增业务
+          await addRole(this.roleForm)
+      }
+      // 重新拉取数据
+      this.getRoleList()
+      this.$message.success('操作成功')
+      this.showDialog=false //关闭弹层=> 触发dialog的close事件
+    } catch (error) {
+      console.log(error)
     }
+  },
+  btnDCancle(){
+    this.roleForm={
+      name:'',
+      description:''
+    }
+    // 移除校验
+    this.$refs.roleForm.resetFields()
+    this.showDialog=false
   }
 }
+
 </script>
 
 <style>
