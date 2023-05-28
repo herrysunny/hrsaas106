@@ -21,8 +21,13 @@ router.beforeEach(async(to, from, next) => {
       if (!store.getters.userId) {
         await store.dispatch('user/getUserInfo')
         // 如果后续需要根据用户资料获取数据的话，这里必须改成同步
+        const routes = await store.dispatch('permission/filterRoutes', routes.menus)
+        // console.log(routes)
+        router.addRoutes([...routes, { path: '*', redirect: '/404', hidden: true }])
+        next(to.path)
+      } else {
+        next()
       }
-      next()
     }
   } else {
     // 没有token的情况下

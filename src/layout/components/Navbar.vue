@@ -8,6 +8,12 @@
     <!-- <breadcrumb class="breadcrumb-container" /> -->
 
     <div class="right-menu">
+      <!-- 放置多语言插件 -->
+      <lang-select class="right-menu-item" />
+      <!-- 放置全局插件 -->
+      <screen-full class="right-menu-item" />
+      <!-- 放置一个切换主题组件 -->
+      <theme-picker class="right-menu-item" />
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
           <img v-imagerror="defaultImg" :src="staffPhoto" class="user-avatar">
@@ -119,6 +125,7 @@ export default {
     }
 
     .right-menu-item {
+       vertical-align: middle;
       display: inline-block;
       padding: 0 8px;
       height: 100%;
@@ -169,6 +176,7 @@ export default {
           font-size: 12px;
           color: #fff;
         }
+
       }
     }
   }

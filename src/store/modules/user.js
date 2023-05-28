@@ -1,6 +1,7 @@
 
 import { getToken, setToken, removeToken, setTimeStamp } from '@/utils/auth'
 import { login, getUserInfo, getUserDetailId } from '@/api/user'
+import { resetRouter } from '@/router'
 // login(data)
 // 状态
 const state = {
@@ -50,6 +51,12 @@ const actions = {
   logout(context) {
     context.commit('removeToken')
     context.commit('removeUserInfo')
+    // 重置路由
+    resetRouter()
+    // 去设置权限模块下的路由为初始状态
+    // vuex子模块调用子模块的action 没加锁的情况下可以随意调用
+    // mutations('','',{routes:true})
+    context.commit('permission,setRoutes', [], { root: true })
   }
 }
 export default {

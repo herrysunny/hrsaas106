@@ -9,6 +9,7 @@ export default {
   children: [{
     path: '', // 不写表示/employees不但有布局layout => 员工主页
     components: () => import('@/views/departments'),
+    name: 'departments',
     // 路由原信息，其实就是一个存储数据的对象
     meta: {
       title: '组织架构',

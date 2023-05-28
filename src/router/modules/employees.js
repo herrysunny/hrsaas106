@@ -9,12 +9,30 @@ export default {
   children: [{
     path: '', // 不写表示/employees不但有布局layout => 员工主页
     components: () => import('@/views/employees'),
+    name: 'employees',
     // 路由原信息，其实就是一个存储数据的对象
     meta: {
       title: '员工管理',
       icon: 'people'
     }
-  }]
+  },
+  {
+    path: 'detail/:id?', // query传参 动态路由参数
+    component: () => import('@/views/employees/detail'),
+    hidden: true, // 表示该内容不在左侧菜单显示
+    meta: {
+      title: '员工详情'
+    }
+  },
+  {
+    path: 'print/:id?',
+    component: () => import('@/views/employees/print'),
+    hidden: true,
+    meta: {
+      title: '员工打印'
+    }
+  }
+  ]
 }
 
 // import Layout from '@/layout'
